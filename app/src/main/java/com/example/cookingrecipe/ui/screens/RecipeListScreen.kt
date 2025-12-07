@@ -17,9 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.cookingrecipe.data.model.Recipe
 import com.example.cookingrecipe.ui.viewmodel.RecipeViewModel
+import androidx.compose.foundation.clickable
 
 @Composable
-fun RecipeListScreen(viewModel: RecipeViewModel) {
+fun RecipeListScreen(
+    viewModel: RecipeViewModel,
+    onRecipeClick: (Int) -> Unit) {
     val recipes by viewModel.recipe.collectAsState()
     val searchText by viewModel.search.collectAsState()
 
@@ -55,17 +58,20 @@ fun RecipeListScreen(viewModel: RecipeViewModel) {
         // --- Lista de Recetas ---
         LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
             items(recipes) { recipe ->
-                RecipeItem(recipe = recipe)
+                RecipeItem(recipe = recipe, onClick = { onRecipeClick(recipe.id) })
             }
         }
     }
 }
 
 @Composable
-fun RecipeItem(recipe: Recipe) {
-    Row(modifier = Modifier.padding(vertical = 8.dp)) {
+fun RecipeItem(recipe: Recipe, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 12.dp, horizontal = 8.dp)
+    ) {
         Text(text = recipe.title)
-        // Aquí podrías añadir un botón o hacer el item clickable
-        // para navegar a la pantalla de detalle.
     }
 }

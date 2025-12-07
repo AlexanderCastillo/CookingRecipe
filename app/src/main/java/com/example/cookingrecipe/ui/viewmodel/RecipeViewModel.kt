@@ -19,6 +19,9 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     private val _search = MutableStateFlow("")
     val search = _search.asStateFlow()
 
+    private val _selectedRecipe = MutableStateFlow<Recipe?>(null)
+    val selectedRecipe: StateFlow<Recipe?> = _selectedRecipe.asStateFlow()
+
     val recipe: StateFlow<List<Recipe>> = search
         .debounce(300)
         .flatMapLatest { query ->
@@ -45,5 +48,17 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
                 )
             )
         }
+    }
+
+    fun showRecipe(id: Int){
+        viewModelScope.launch {
+            repository.getById(id).collect{ recipe ->
+                _selectedRecipe.value = recipe
+            }
+        }
+    }
+
+    fun clearSelectedRecipe() {
+        _selectedRecipe.value = null
     }
 }
