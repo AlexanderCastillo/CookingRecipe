@@ -18,6 +18,7 @@ import androidx.navigation.navArgument
 import androidx.room.Room
 import com.example.cookingrecipe.data.database.AppDatabase
 import com.example.cookingrecipe.data.repository.RecipeRepository
+import com.example.cookingrecipe.ui.screens.AddRecipeScreen
 import com.example.cookingrecipe.ui.screens.RecipeDetailScreen
 import com.example.cookingrecipe.ui.screens.RecipeListScreen
 import com.example.cookingrecipe.ui.theme.CookingRecipeTheme
@@ -71,6 +72,10 @@ fun AppNavigation(viewModel: RecipeViewModel) {
                 onRecipeClick = { recipeId ->
                     // Navega a la pantalla de detalle pasando el ID de la receta
                     navController.navigate("recipe_detail/$recipeId")
+                },
+                onAddRecipeClick = {
+                    // Navega a la pantalla de agregar receta
+                    navController.navigate("add_recipe")
                 }
             )
         }
@@ -88,6 +93,16 @@ fun AppNavigation(viewModel: RecipeViewModel) {
                 viewModel = viewModel,
                 onNavigateBack = {
                     viewModel.clearSelectedRecipe() // Limpia la receta al volver
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Ruta para la pantalla de agregar
+        composable("add_recipe") {
+            AddRecipeScreen(
+                viewModel = viewModel,
+                onNavigateBack = {
                     navController.popBackStack()
                 }
             )

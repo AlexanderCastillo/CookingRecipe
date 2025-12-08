@@ -18,50 +18,56 @@ import androidx.compose.ui.unit.dp
 import com.example.cookingrecipe.data.model.Recipe
 import com.example.cookingrecipe.ui.viewmodel.RecipeViewModel
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 
 @Composable
 fun RecipeListScreen(
     viewModel: RecipeViewModel,
-    onRecipeClick: (Int) -> Unit) {
+    onRecipeClick: (Int) -> Unit,
+    onAddRecipeClick: () -> Unit) {
     val recipes by viewModel.recipe.collectAsState()
     val searchText by viewModel.search.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        // --- Barra de Búsqueda ---
-        OutlinedTextField(
-            value = searchText,
-            onValueChange = viewModel::onSearchChange, // Llama a la función del ViewModel
-            label = { Text("Buscar por título...") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        // --- Botón para agregar recetas de prueba ---
-        Button(
-            onClick = {
-                // Datos de ejemplo
-                viewModel.addRecipe(
-                    title = "Tacos al Pastor",
-                    description = "Clásicos tacos mexicanos.",
-                    ingredients = "Tortillas, Carne de cerdo, Piña, Cebolla, Cilantro",
-                    instructions = "Marinar la carne, asarla en el trompo, cortar y servir en tortillas con los demás ingredientes."
-                )
-            },
-            modifier = Modifier.padding(top = 8.dp)
-        ) {
-            Text("Agregar Receta de Prueba")
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = onAddRecipeClick) {
+                Icon(Icons.Default.Add, contentDescription = "Agregar Receta")
+            }
         }
+    ){
+        paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
+            Text("Lista de recetas")
 
-        // --- Lista de Recetas ---
-        LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
-            items(recipes) { recipe ->
-                RecipeItem(recipe = recipe, onClick = { onRecipeClick(recipe.id) })
+            OutlinedTextField(
+                value = searchText,
+                onValueChange = viewModel::onSearchChange,
+                label = { Text("Buscar por título...") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LazyColumn {
+                items(recipes) { recipe ->
+                    RecipeItem(recipe = recipe, onClick = { onRecipeClick(recipe.id) })
+                }
             }
         }
     }
+
+
 }
 
 @Composable
